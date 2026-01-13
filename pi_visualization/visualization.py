@@ -97,6 +97,7 @@ class PiVisualizationApp:
         """Configura ejes segun el modo seleccionado."""
         self.main_ax.set_xlabel("Iteracion")
         self.main_ax.set_xscale("log")
+        self.main_ax.set_xlim(1, max(2, self.max_iterations))
 
         if self.mode == "error":
             self.main_ax.set_title("Convergencia por Error Absoluto")
@@ -113,10 +114,6 @@ class PiVisualizationApp:
             self.real_pi_line.set_visible(True)
 
         self.main_ax.grid(True, which="both", linestyle=":", alpha=0.5)
-
-        # Mantiene rango inicial valido para escala logaritmica.
-        if self.current_iteration < 2:
-            self.main_ax.set_xlim(1, 10)
 
     def _refresh_legend(self) -> None:
         """Actualiza la leyenda segun el modo actual."""
@@ -202,9 +199,7 @@ class PiVisualizationApp:
             self.lines[method.name].set_data(x_data, y_data)
 
         self.main_ax.relim()
-        self.main_ax.autoscale_view()
-        if self.current_iteration < 2:
-            self.main_ax.set_xlim(1, 10)
+        self.main_ax.autoscale_view(scalex=False, scaley=True)
 
     def _on_frame(self, _frame_index: int) -> list[object]:
         """Actualiza un frame de la animacion."""
