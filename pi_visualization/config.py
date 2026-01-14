@@ -7,10 +7,10 @@ from decimal import Decimal
 DECIMAL_PRECISION = 25
 
 # Iteraciones maximas del proceso de convergencia.
-MAX_ITERATIONS = 10000
+MAX_ITERATIONS = 1000
 
 # Intervalo entre frames de la animacion (milisegundos).
-ANIMATION_INTERVAL_MS = 50
+ANIMATION_INTERVAL_MS = 10
 
 # Escala Y logaritmica para visualizar el error absoluto.
 USE_LOG_SCALE_Y_ERROR = True

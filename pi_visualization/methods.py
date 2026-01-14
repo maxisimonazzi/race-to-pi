@@ -91,6 +91,7 @@ class RamanujanMethod(PiMethod):
 
     def __init__(self, color: str, pi_real: Decimal) -> None:
         super().__init__(name="Ramanujan", color=color, pi_real=pi_real)
+        self._max_compute_iterations = 10
         self._n = 0
         self._sum_terms = Decimal(0)
         self._b_n = Decimal(1)
@@ -98,6 +99,10 @@ class RamanujanMethod(PiMethod):
         self._constant = (Decimal(2) * decimal_sqrt(Decimal(2))) / Decimal(9801)
 
     def _compute_next_value(self) -> Decimal:
+        # Congela el valor luego de 10 iteraciones para evitar computo innecesario.
+        if self._n >= self._max_compute_iterations:
+            return self._current_value
+
         n = self._n
         coefficient = Decimal(1103 + 26390 * n)
         self._sum_terms += self._b_n * coefficient
