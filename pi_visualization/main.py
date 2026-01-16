@@ -9,7 +9,16 @@ from config import (
     PI_REAL,
     USE_LOG_SCALE_Y_ERROR,
 )
-from methods import EulerBaselMethod, LeibnizMethod, RamanujanMethod, WallisMethod
+from methods import (
+    ChudnovskyMethod,
+    EulerBaselMethod,
+    GaussLegendreMethod,
+    LeibnizMethod,
+    MachinMethod,
+    NilakanthaMethod,
+    RamanujanMethod,
+    WallisMethod,
+)
 from utils import configure_decimal_context
 from visualization import PiVisualizationApp
 
@@ -17,10 +26,14 @@ from visualization import PiVisualizationApp
 def build_methods():
     """Crea las instancias de metodos numericos con sus colores."""
     return [
-        LeibnizMethod(color=METHOD_COLORS["Leibniz"], pi_real=PI_REAL),
-        WallisMethod(color=METHOD_COLORS["Wallis"], pi_real=PI_REAL),
-        EulerBaselMethod(color=METHOD_COLORS["Euler (Basilea)"], pi_real=PI_REAL),
-        RamanujanMethod(color=METHOD_COLORS["Ramanujan"], pi_real=PI_REAL),
+        RamanujanMethod(color=METHOD_COLORS["Serie de Ramanujan"], pi_real=PI_REAL),
+        LeibnizMethod(color=METHOD_COLORS["Serie de Leibniz"], pi_real=PI_REAL),
+        WallisMethod(color=METHOD_COLORS["Producto de Wallis"], pi_real=PI_REAL),
+        EulerBaselMethod(color=METHOD_COLORS["Serie de Euler (Problema de Basilea)"], pi_real=PI_REAL),
+        MachinMethod(color=METHOD_COLORS["Machin (Arcotangente)"], pi_real=PI_REAL),
+        GaussLegendreMethod(color=METHOD_COLORS["Gauss-Legendre (AGM)"], pi_real=PI_REAL),
+        NilakanthaMethod(color=METHOD_COLORS["Nilakantha"], pi_real=PI_REAL),
+        ChudnovskyMethod(color=METHOD_COLORS["Chudnovsky"], pi_real=PI_REAL),
     ]
 
 

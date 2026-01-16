@@ -23,8 +23,12 @@ PI_REAL = Decimal(str(math.pi))
 
 # Colores consistentes por metodo.
 METHOD_COLORS = {
-    "Leibniz": "#1f77b4",
-    "Wallis": "#ff7f0e",
-    "Euler (Basilea)": "#2ca02c",
-    "Ramanujan": "#d62728",
+    "Serie de Ramanujan": "#d62728",
+    "Serie de Leibniz": "#1f77b4",
+    "Producto de Wallis": "#ff7f0e",
+    "Serie de Euler (Problema de Basilea)": "#2ca02c",
+    "Machin (Arcotangente)": "#9467bd",
+    "Gauss-Legendre (AGM)": "#8c564b",
+    "Nilakantha": "#e377c2",
+    "Chudnovsky": "#17becf",
 }
