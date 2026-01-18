@@ -28,6 +28,7 @@ class FactorialCache:
     """Cache incremental de factoriales para enteros no negativos."""
 
     def __init__(self) -> None:
+        """Inicializa el almacenamiento interno de factoriales."""
         self._values = [1]
 
     def factorial(self, n: int) -> int:

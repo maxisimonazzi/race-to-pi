@@ -24,6 +24,7 @@ class PiVisualizationApp:
         use_log_scale_y_error: bool,
         min_plot_error: Decimal,
     ) -> None:
+        """Construye la interfaz, controles y estructura de animacion incremental."""
         self.methods = methods
         self.pi_real = pi_real
         self.max_iterations = max_iterations
@@ -54,17 +55,18 @@ class PiVisualizationApp:
         )
         plt.subplots_adjust(left=0.08, right=0.67, bottom=0.2, top=0.86)
 
-        self.checkbox_ax = self.figure.add_axes([0.70, 0.74, 0.28, 0.18])
-        self.checkbox_ax.set_title("Metodos visibles", fontsize=9)
+        self.checkbox_ax = self.figure.add_axes([0.68, 0.66, 0.30, 0.26])
+        self.checkbox_ax.set_title("Metodos visibles", fontsize=10)
         checkbox_labels = [method.name for method in self.methods]
         checkbox_states = [True for _ in self.methods]
         self.check_buttons = CheckButtons(self.checkbox_ax, checkbox_labels, checkbox_states)
         self.check_buttons.on_clicked(self._toggle_method_visibility)
         for label, method in zip(self.check_buttons.labels, self.methods):
             label.set_color(method.color)
-            label.set_fontsize(8)
+            label.set_fontsize(9)
+        self.checkbox_ax.tick_params(labelsize=9)
 
-        self.table_ax = self.figure.add_axes([0.70, 0.23, 0.28, 0.47])
+        self.table_ax = self.figure.add_axes([0.68, 0.18, 0.30, 0.44])
         self.table_ax.axis("off")
 
         self.error_button_ax = self.figure.add_axes([0.12, 0.06, 0.16, 0.08])
