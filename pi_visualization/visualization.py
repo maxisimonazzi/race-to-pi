@@ -45,28 +45,25 @@ class PiVisualizationApp:
 
         self.figure, self.main_ax = plt.subplots(figsize=(14, 8))
         self.figure.canvas.manager.set_window_title("La carrera de pi")
-        self.figure.suptitle("La carrera de π", fontsize=17, fontweight="bold", y=0.98)
+        self.figure.suptitle("La carrera de π", fontsize=18, fontweight="bold", y=0.995)
         self.figure.text(
             0.5,
-            0.945,
+            0.94,
             "Comparativa de métodos de convergencia para el cálculo de π",
             ha="center",
-            fontsize=11,
+            fontsize=12,
         )
-        plt.subplots_adjust(left=0.08, right=0.67, bottom=0.2, top=0.86)
+        plt.subplots_adjust(left=0.08, right=0.67, bottom=0.2, top=0.82)
 
-        self.checkbox_ax = self.figure.add_axes([0.68, 0.66, 0.30, 0.26])
-        self.checkbox_ax.set_title("Metodos visibles", fontsize=10)
+        self.checkbox_ax = self.figure.add_axes([0.68, 0.58, 0.30, 0.35])
+        self.checkbox_ax.set_title("Metodos visibles", fontsize=11)
         checkbox_labels = [method.name for method in self.methods]
         checkbox_states = [True for _ in self.methods]
         self.check_buttons = CheckButtons(self.checkbox_ax, checkbox_labels, checkbox_states)
         self.check_buttons.on_clicked(self._toggle_method_visibility)
-        for label, method in zip(self.check_buttons.labels, self.methods):
-            label.set_color(method.color)
-            label.set_fontsize(9)
-        self.checkbox_ax.tick_params(labelsize=9)
+        self._style_check_buttons()
 
-        self.table_ax = self.figure.add_axes([0.68, 0.18, 0.30, 0.44])
+        self.table_ax = self.figure.add_axes([0.68, 0.18, 0.30, 0.37])
         self.table_ax.axis("off")
 
         self.error_button_ax = self.figure.add_axes([0.12, 0.06, 0.16, 0.08])
@@ -137,6 +134,58 @@ class PiVisualizationApp:
     def _get_visible_methods(self) -> list[PiMethod]:
         """Devuelve la lista de metodos actualmente visibles."""
         return [method for method in self.methods if self.selected_methods[method.name]]
+
+    def _style_check_buttons(self) -> None:
+        """Aumenta el tamano visual de las casillas para mejorar la seleccion."""
+        method_colors = [method.color for method in self.methods]
+        item_count = len(self.methods)
+
+        # Matplotlib >= 3.7: agranda realmente caja y marca del checkbox.
+        if hasattr(self.check_buttons, "set_label_props"):
+            self.check_buttons.set_label_props(
+                {
+                    "color": method_colors,
+                    "fontsize": [11] * item_count,
+                }
+            )
+        else:
+            for label, method in zip(self.check_buttons.labels, self.methods):
+                label.set_color(method.color)
+                label.set_fontsize(11)
+
+        if hasattr(self.check_buttons, "set_frame_props"):
+            self.check_buttons.set_frame_props(
+                {
+                    "sizes": [260] * item_count,
+                    "linewidths": [1.6] * item_count,
+                }
+            )
+        else:
+            rectangles = getattr(self.check_buttons, "rectangles", [])
+            for rectangle in rectangles:
+                x_pos, y_pos = rectangle.get_xy()
+                width = rectangle.get_width()
+                height = rectangle.get_height()
+                center_x = x_pos + width / 2
+                center_y = y_pos + height / 2
+                new_width = width * 2.0
+                new_height = height * 2.0
+                rectangle.set_width(new_width)
+                rectangle.set_height(new_height)
+                rectangle.set_xy((center_x - new_width / 2, center_y - new_height / 2))
+
+        if hasattr(self.check_buttons, "set_check_props"):
+            self.check_buttons.set_check_props(
+                {
+                    "sizes": [170] * item_count,
+                    "linewidths": [2.8] * item_count,
+                }
+            )
+        else:
+            check_lines = getattr(self.check_buttons, "lines", [])
+            for line_pair in check_lines:
+                for line in line_pair:
+                    line.set_linewidth(2.8)
 
     def _create_table(self) -> None:
         """Crea tabla lateral dinamica con valor y error por metodo."""

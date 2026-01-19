@@ -7,7 +7,7 @@ from decimal import Decimal
 DECIMAL_PRECISION = 25
 
 # Iteraciones maximas del proceso de convergencia.
-MAX_ITERATIONS = 1000
+MAX_ITERATIONS = 200
 
 # Intervalo entre frames de la animacion (milisegundos).
 ANIMATION_INTERVAL_MS = 10
@@ -20,6 +20,16 @@ MIN_PLOT_ERROR = Decimal("1e-24")
 
 # Valor de referencia de pi convertido de forma segura a Decimal.
 PI_REAL = Decimal(str(math.pi))
+
+# Iteraciones maximas de calculo real por metodo (luego se congela el ultimo valor):
+# - Ramanujan: convergencia extraordinariamente rapida; en ~10 terminos ya supera la precision usada.
+RAMANUJAN_MAX_COMPUTE_ITERATIONS = 10
+# - Chudnovsky: cada termino agrega muchas cifras correctas de pi, por eso 10 iteraciones son suficientes.
+CHUDNOVSKY_MAX_COMPUTE_ITERATIONS = 10
+# - Gauss-Legendre (AGM): convergencia cuadratica; con pocas iteraciones alcanza precision alta.
+GAUSS_LEGENDRE_MAX_COMPUTE_ITERATIONS = 10
+# - Machin: convergencia alta pero mas gradual que AGM/Ramanujan; se extiende a 20 iteraciones.
+MACHIN_MAX_COMPUTE_ITERATIONS = 20
 
 # Colores consistentes por metodo.
 METHOD_COLORS = {

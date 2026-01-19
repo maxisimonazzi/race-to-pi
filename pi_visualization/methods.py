@@ -5,6 +5,12 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from decimal import Decimal
 
+from config import (
+    CHUDNOVSKY_MAX_COMPUTE_ITERATIONS,
+    GAUSS_LEGENDRE_MAX_COMPUTE_ITERATIONS,
+    MACHIN_MAX_COMPUTE_ITERATIONS,
+    RAMANUJAN_MAX_COMPUTE_ITERATIONS,
+)
 from utils import decimal_sqrt
 
 
@@ -103,7 +109,6 @@ class RamanujanMethod(PiMethod):
     def __init__(self, color: str, pi_real: Decimal) -> None:
         """Inicializa la recurrencia de Ramanujan y su tope de calculo."""
         super().__init__(name="Serie de Ramanujan", color=color, pi_real=pi_real)
-        self._max_compute_iterations = 10
         self._n = 0
         self._sum_terms = Decimal(0)
         self._b_n = Decimal(1)
@@ -112,8 +117,8 @@ class RamanujanMethod(PiMethod):
 
     def _compute_next_value(self) -> Decimal:
         """Calcula el siguiente termino de Ramanujan o reutiliza el ultimo valor."""
-        # Se deja de calcular Ramanujan en la decima iteracion para evitar computo innecesario.
-        if self._n >= self._max_compute_iterations:
+        # Se deja de calcular Ramanujan al alcanzar el limite configurado (10 iteraciones).
+        if self._n >= RAMANUJAN_MAX_COMPUTE_ITERATIONS:
             return self._current_value
 
         n = self._n
@@ -137,7 +142,6 @@ class MachinMethod(PiMethod):
     def __init__(self, color: str, pi_real: Decimal) -> None:
         """Inicializa la expansion de arctangente para la formula de Machin."""
         super().__init__(name="Machin (Arcotangente)", color=color, pi_real=pi_real)
-        self._max_compute_iterations = 20
         self._x1 = Decimal(1) / Decimal(5)
         self._x2 = Decimal(1) / Decimal(239)
         self._x1_sq = self._x1 * self._x1
@@ -150,8 +154,8 @@ class MachinMethod(PiMethod):
 
     def _compute_next_value(self) -> Decimal:
         """Actualiza Machin por series de arctan o congela tras 20 iteraciones."""
-        # Se deja de calcular Machin en la veinteava iteracion para mantener rendimiento.
-        if self._n >= self._max_compute_iterations:
+        # Se deja de calcular Machin al alcanzar el limite configurado (20 iteraciones).
+        if self._n >= MACHIN_MAX_COMPUTE_ITERATIONS:
             return self._current_value
 
         self._sum1 += self._term1
@@ -171,7 +175,6 @@ class GaussLegendreMethod(PiMethod):
     def __init__(self, color: str, pi_real: Decimal) -> None:
         """Inicializa variables AGM y tope de calculo para Gauss-Legendre."""
         super().__init__(name="Gauss-Legendre (AGM)", color=color, pi_real=pi_real)
-        self._max_compute_iterations = 10
         self._n = 0
         self._a = Decimal(1)
         self._b = Decimal(1) / decimal_sqrt(Decimal(2))
@@ -180,8 +183,8 @@ class GaussLegendreMethod(PiMethod):
 
     def _compute_next_value(self) -> Decimal:
         """Ejecuta una iteracion AGM o reutiliza el ultimo valor tras 10 iteraciones."""
-        # Se deja de calcular Gauss-Legendre en la decima iteracion por convergencia rapida.
-        if self._n >= self._max_compute_iterations:
+        # Se deja de calcular Gauss-Legendre al alcanzar el limite configurado (10 iteraciones).
+        if self._n >= GAUSS_LEGENDRE_MAX_COMPUTE_ITERATIONS:
             return self._current_value
 
         next_a = (self._a + self._b) / Decimal(2)
@@ -224,7 +227,6 @@ class ChudnovskyMethod(PiMethod):
     def __init__(self, color: str, pi_real: Decimal) -> None:
         """Inicializa la serie de Chudnovsky con recurrencia y tope de calculo."""
         super().__init__(name="Chudnovsky", color=color, pi_real=pi_real)
-        self._max_compute_iterations = 10
         self._k = 0
         self._m = 1
         self._l = 13591409
@@ -235,8 +237,8 @@ class ChudnovskyMethod(PiMethod):
 
     def _compute_next_value(self) -> Decimal:
         """Actualiza Chudnovsky o congela el valor luego de 10 iteraciones."""
-        # Se deja de calcular Chudnovsky en la decima iteracion por convergencia muy alta.
-        if self._k >= self._max_compute_iterations:
+        # Se deja de calcular Chudnovsky al alcanzar el limite configurado (10 iteraciones).
+        if self._k >= CHUDNOVSKY_MAX_COMPUTE_ITERATIONS:
             return self._current_value
 
         if self._k > 0:
