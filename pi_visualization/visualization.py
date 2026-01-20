@@ -69,14 +69,17 @@ class PiVisualizationApp:
         self.error_button_ax = self.figure.add_axes([0.12, 0.06, 0.16, 0.08])
         self.approx_button_ax = self.figure.add_axes([0.30, 0.06, 0.16, 0.08])
         self.play_button_ax = self.figure.add_axes([0.48, 0.06, 0.16, 0.08])
+        self.reset_button_ax = self.figure.add_axes([0.66, 0.06, 0.12, 0.08])
 
         self.error_button = Button(self.error_button_ax, "Ver Error")
         self.approx_button = Button(self.approx_button_ax, "Ver Aproximacion")
         self.play_button = Button(self.play_button_ax, "Play")
+        self.reset_button = Button(self.reset_button_ax, "Reset")
 
         self.error_button.on_clicked(self._show_error_view)
         self.approx_button.on_clicked(self._show_approx_view)
         self.play_button.on_clicked(self._toggle_play_pause)
+        self.reset_button.on_clicked(self._reset_app_state)
 
         self.lines: dict[str, object] = {}
         for method in self.methods:
@@ -113,19 +116,19 @@ class PiVisualizationApp:
 
     def _configure_axes(self) -> None:
         """Configura ejes segun el modo seleccionado."""
-        self.main_ax.set_xlabel("Iteracion")
+        self.main_ax.set_xlabel("Iteracion", fontweight="bold")
         self.main_ax.set_xscale("log")
         self.main_ax.set_xlim(1, max(2, self.max_iterations))
 
         if self.mode == "error":
-            self.main_ax.set_ylabel("Error absoluto")
+            self.main_ax.set_ylabel("Error absoluto", fontweight="bold")
             if self.use_log_scale_y_error:
                 self.main_ax.set_yscale("log")
             else:
                 self.main_ax.set_yscale("linear")
             self.real_pi_line.set_visible(False)
         else:
-            self.main_ax.set_ylabel("Aproximacion de pi")
+            self.main_ax.set_ylabel("Aproximacion de pi", fontweight="bold")
             self.main_ax.set_yscale("linear")
             self.real_pi_line.set_visible(True)
 
@@ -213,8 +216,8 @@ class PiVisualizationApp:
         for method in visible_methods:
             rows.append(
                 [
-                    method.name,
                     "",
+                    method.name,
                     format_decimal(method.get_current_value()),
                     format_decimal(method.get_error()),
                 ]
@@ -222,16 +225,17 @@ class PiVisualizationApp:
 
         self.table = self.table_ax.table(
             cellText=rows,
-            colLabels=["Metodo", "Color", "Pi aprox", "Error"],
+            colLabels=["Color", "Metodo", "Pi aprox", "Error"],
             loc="center",
             cellLoc="left",
+            colWidths=[0.10, 0.36, 0.25, 0.30],
         )
         self.table.auto_set_font_size(False)
         self.table.set_fontsize(8)
         self.table.scale(1.0, 1.5)
 
         for row_idx, method in enumerate(visible_methods, start=1):
-            color_cell = self.table[(row_idx, 1)]
+            color_cell = self.table[(row_idx, 0)]
             color_cell.set_facecolor(method.color)
             color_cell.get_text().set_text("   ")
 
@@ -246,7 +250,12 @@ class PiVisualizationApp:
 
     def _toggle_method_visibility(self, method_name: str) -> None:
         """Muestra u oculta un metodo en grafico y tabla."""
-        self.selected_methods[method_name] = not self.selected_methods[method_name]
+        if hasattr(self.check_buttons, "get_status"):
+            method_names = [method.name for method in self.methods]
+            method_index = method_names.index(method_name)
+            self.selected_methods[method_name] = bool(self.check_buttons.get_status()[method_index])
+        else:
+            self.selected_methods[method_name] = not self.selected_methods[method_name]
         self._refresh_lines()
         self._create_table()
         self.figure.canvas.draw_idle()
@@ -279,6 +288,33 @@ class PiVisualizationApp:
             self.animation.event_source.start()
             self.play_button.label.set_text("Pausa")
 
+        self.figure.canvas.draw_idle()
+
+    def _reset_app_state(self, _event: object) -> None:
+        """Reinicia toda la aplicacion al estado inicial."""
+        self.is_running = False
+        self.animation.event_source.stop()
+        self.play_button.label.set_text("Play")
+
+        # Reinstancia cada metodo para limpiar su estado interno incremental.
+        self.methods = [method.__class__(color=method.color, pi_real=self.pi_real) for method in self.methods]
+        self.methods_by_name = {method.name: method for method in self.methods}
+        self.selected_methods = {method.name: True for method in self.methods}
+
+        self.current_iteration = 0
+        self.iterations = []
+        self.pi_history = {method.name: [] for method in self.methods}
+        self.error_history = {method.name: [] for method in self.methods}
+        self.mode = "error"
+
+        if hasattr(self.check_buttons, "get_status"):
+            for index, is_active in enumerate(self.check_buttons.get_status()):
+                if not is_active:
+                    self.check_buttons.set_active(index)
+
+        self._configure_axes()
+        self._create_table()
+        self._refresh_lines()
         self.figure.canvas.draw_idle()
 
     def _refresh_lines(self) -> None:
