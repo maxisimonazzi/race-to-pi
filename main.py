@@ -3,10 +3,13 @@
 from config import (
     ANIMATION_INTERVAL_MS,
     DECIMAL_PRECISION,
+    ENABLE_BLIT,
     MAX_ITERATIONS,
     METHOD_COLORS,
     MIN_PLOT_ERROR,
     PI_REAL,
+    REDRAW_AXES_EVERY_N_FRAMES,
+    REDRAW_TABLE_EVERY_N_FRAMES,
     USE_LOG_SCALE_Y_ERROR,
 )
 from methods import (
@@ -48,6 +51,9 @@ def main() -> None:
         animation_interval_ms=ANIMATION_INTERVAL_MS,
         use_log_scale_y_error=USE_LOG_SCALE_Y_ERROR,
         min_plot_error=MIN_PLOT_ERROR,
+        enable_blit=ENABLE_BLIT,
+        redraw_axes_every_n_frames=REDRAW_AXES_EVERY_N_FRAMES,
+        redraw_table_every_n_frames=REDRAW_TABLE_EVERY_N_FRAMES,
     )
     app.show()
 

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from decimal import Decimal
 
+import matplotlib
+matplotlib.use("QtAgg")
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.widgets import Button, CheckButtons
@@ -23,6 +25,9 @@ class PiVisualizationApp:
         animation_interval_ms: int,
         use_log_scale_y_error: bool,
         min_plot_error: Decimal,
+        enable_blit: bool,
+        redraw_axes_every_n_frames: int,
+        redraw_table_every_n_frames: int,
     ) -> None:
         """Construye la interfaz, controles y estructura de animacion incremental."""
         self.methods = methods
@@ -31,6 +36,9 @@ class PiVisualizationApp:
         self.animation_interval_ms = animation_interval_ms
         self.use_log_scale_y_error = use_log_scale_y_error
         self.min_plot_error = min_plot_error
+        self.enable_blit = enable_blit
+        self.redraw_axes_every_n_frames = max(1, redraw_axes_every_n_frames)
+        self.redraw_table_every_n_frames = max(1, redraw_table_every_n_frames)
 
         self.mode = "error"
         self.current_iteration = 0
@@ -108,7 +116,7 @@ class PiVisualizationApp:
             self.figure,
             self._on_frame,
             interval=self.animation_interval_ms,
-            blit=False,
+            blit=self.enable_blit,
             cache_frame_data=False,
         )
         # La animacion solo comienza al presionar Play.
@@ -317,7 +325,7 @@ class PiVisualizationApp:
         self._refresh_lines()
         self.figure.canvas.draw_idle()
 
-    def _refresh_lines(self) -> None:
+    def _refresh_lines(self, recalculate_axes: bool = True) -> None:
         """Refresca curvas segun el modo actual sin recalcular iteraciones."""
         x_data = self.iterations
         has_visible_methods = False
@@ -336,12 +344,12 @@ class PiVisualizationApp:
             line.set_visible(True)
             line.set_data(x_data, y_data)
 
-        if has_visible_methods:
+        if has_visible_methods and recalculate_axes:
             self.main_ax.relim()
             self.main_ax.autoscale_view(scalex=False, scaley=True)
-        elif self.mode == "error":
+        elif not has_visible_methods and self.mode == "error":
             self.main_ax.set_ylim(float(self.min_plot_error), 1.0)
-        else:
+        elif not has_visible_methods:
             pi_float = float(self.pi_real)
             self.main_ax.set_ylim(pi_float - 1.0, pi_float + 1.0)
 
@@ -370,8 +378,12 @@ class PiVisualizationApp:
             plot_error = current_error if current_error > self.min_plot_error else self.min_plot_error
             self.error_history[method.name].append(float(plot_error))
 
-        self._refresh_lines()
-        self._update_table()
+        recalculate_axes = (self.current_iteration % self.redraw_axes_every_n_frames) == 0
+        redraw_table = (self.current_iteration % self.redraw_table_every_n_frames) == 0
+
+        self._refresh_lines(recalculate_axes=recalculate_axes)
+        if redraw_table or self.current_iteration == 1:
+            self._update_table()
 
         return list(self.lines.values()) + [self.real_pi_line]
 

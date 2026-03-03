@@ -7,10 +7,25 @@ from decimal import Decimal
 DECIMAL_PRECISION = 25
 
 # Iteraciones maximas del proceso de convergencia.
-MAX_ITERATIONS = 100
+MAX_ITERATIONS = 1000
 
 # Intervalo entre frames de la animacion (milisegundos).
-ANIMATION_INTERVAL_MS = 10
+ANIMATION_INTERVAL_MS = 33
+
+# Activa o desactiva blit en la animacion.
+# - True: puede mejorar fluidez/FPS en muchos equipos.
+# - False: modo mas compatible si notas artefactos visuales.
+ENABLE_BLIT = True
+
+# Cada cuantos frames recalcular/redibujar ejes (autoscale).
+# - 1: recalcula en cada frame (mas preciso, menos fluido).
+# - 5 o mas: menos costo de redibujo (mas fluido).
+REDRAW_AXES_EVERY_N_FRAMES = 1
+
+# Cada cuantos frames actualizar/redibujar la tabla lateral.
+# - 1: actualiza en cada frame.
+# - 2, 3, 4...: reduce costo y mejora fluidez.
+REDRAW_TABLE_EVERY_N_FRAMES = 1
 
 # Escala Y logaritmica para visualizar el error absoluto.
 USE_LOG_SCALE_Y_ERROR = True
