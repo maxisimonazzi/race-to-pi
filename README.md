@@ -25,11 +25,19 @@ Comparar visualmente la convergencia de 8 metodos para aproximar pi:
 7. Nilakantha
 8. Chudnovsky
 
-La app permite ver:
+La animación mostrará:
 
-- Error absoluto por iteracion.
-- Valor aproximado de pi por iteracion.
-- Tabla lateral dinamica con metodo, color, aproximacion y error.
+1.  Error absoluto en función del número de iteración.
+2.  Aproximación progresiva al valor real de π.
+3.  Comparación directa entre métodos clásicos y modernos.
+4.  Tabla lateral dinamica con metodo, color, aproximacion y error.
+
+Se espera observar:
+
+-   Convergencia extremadamente lenta en Leibniz.
+-   Caída abrupta del error en Ramanujan y Chudnovsky.
+-   Comportamiento intermedio en Machin y Euler.
+-   Convergencia cuadrática destacada en Gauss--Legendre.
 
 ---
 
@@ -126,6 +134,110 @@ error = abs(pi_real - pi_aproximado)
 - Calculo incremental:
   - No se recalcula desde cero en cada frame.
   - Cada metodo mantiene su estado interno entre iteraciones.
+
+---
+
+## Fundamentos
+
+El valor de referencia utilizado es:
+
+``` math
+\pi \approx 3.141592653589793...
+```
+
+## Serie de Ramanujan
+
+``` math
+\frac{1}{\pi} = \frac{2\sqrt{2}}{9801} \sum_{n=0}^{\infty} \frac{(4n)! (1103 + 26390n)}{(n!)^4 396^{4n}}
+```
+
+------------------------------------------------------------------------
+
+## Serie de Leibniz
+
+``` math
+\pi = 4 \sum_{n=0}^{\infty} \frac{(-1)^n}{2n+1}
+```
+
+------------------------------------------------------------------------
+
+## Producto de Wallis
+
+``` math
+\frac{\pi}{2} = \prod_{n=1}^{\infty} \left( \frac{2n}{2n-1} \cdot \frac{2n}{2n+1} \right)
+```
+
+------------------------------------------------------------------------
+
+## Serie de Euler (Problema de Basilea)
+
+``` math
+\sum_{n=1}^{\infty} \frac{1}{n^2} = \frac{\pi^2}{6}
+```
+
+``` math
+\pi = \sqrt{6 \sum_{n=1}^{\infty} \frac{1}{n^2}}
+```
+
+------------------------------------------------------------------------
+
+## Fórmula de Machin
+
+``` math
+\pi = 16 \arctan\left(\frac{1}{5}\right) - 4 \arctan\left(\frac{1}{239}\right)
+```
+
+``` math
+\arctan(x) = \sum_{n=0}^{\infty} (-1)^n \frac{x^{2n+1}}{2n+1}, \quad |x| \le 1
+```
+
+------------------------------------------------------------------------
+
+## Método de Gauss--Legendre (AGM)
+
+``` math
+a_0 = 1, \quad b_0 = \frac{1}{\sqrt{2}}, \quad t_0 = \frac{1}{4}, \quad p_0 = 1
+```
+
+``` math
+a_{n+1} = \frac{a_n + b_n}{2}, \quad b_{n+1} = \sqrt{a_n b_n}, \quad t_{n+1} = t_n - p_n (a_n - a_{n+1})^2, \quad p_{n+1} = 2 p_n
+```
+
+``` math
+\pi \approx \frac{(a_n + b_n)^2}{4 t_n}
+```
+
+------------------------------------------------------------------------
+
+## Serie de Nilakantha
+
+``` math
+\pi = 3 + \sum_{n=1}^{\infty} (-1)^{n+1} \frac{4}{(2n)(2n+1)(2n+2)}
+```
+
+------------------------------------------------------------------------
+
+## Serie de Chudnovsky
+
+``` math
+\frac{1}{\pi} = 12 \sum_{n=0}^{\infty} \frac{(-1)^n (6n)! (13591409 + 545140134n)}{(3n)! (n!)^3 (640320)^{3n + \frac{3}{2}}}
+```
+
+------------------------------------------------------------------------
+
+# Comparativa de Convergencia
+
+
+|Método | Tipo de Convergencia | Velocidad Aproximada | Iteraciones para \~15|
+|-|-|-|-|
+|Leibniz|Lineal muy lenta|Muy lenta|\~10 millones|
+|Wallis|Lineal lenta|Lenta|\~100 mil|
+|Nilakantha|Lineal mejorada|Lenta-intermedia|\~10 mil|
+|Euler (Basilea)|Polinómica|Intermedia|\~1000|
+|Machin|Serie de arctan|Rápida|\~100|
+|Gauss-Legendre|Cuadrática|Muy rápida|\~5|
+|Ramanujan|Cuasi-exponencial|Extremadamente Rapida|1-2|
+|Chudnovsky|Cuasi-exponencial|Extremadamente Rapida|1|
 
 ---
 
