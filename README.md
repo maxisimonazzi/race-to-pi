@@ -4,6 +4,12 @@ Aplicacion en Python + Matplotlib para comparar como convergen distintos metodos
 
 El proyecto muestra, en tiempo real, la evolucion del error y de la aproximacion de cada metodo, usando calculo de alta precision con `Decimal`.
 
+## Video del error
+https://github.com/user-attachments/assets/544a36b8-9eef-4539-8e2a-3460bb8a3616
+
+## Video de la aproximación
+https://github.com/user-attachments/assets/f27da360-bd09-4123-bbed-84a3dd3688a1
+
 ---
 
 ## Objetivo
