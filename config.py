@@ -7,7 +7,7 @@ from decimal import Decimal
 DECIMAL_PRECISION = 25
 
 # Iteraciones maximas del proceso de convergencia.
-MAX_ITERATIONS = 200
+MAX_ITERATIONS = 100
 
 # Intervalo entre frames de la animacion (milisegundos).
 ANIMATION_INTERVAL_MS = 10
