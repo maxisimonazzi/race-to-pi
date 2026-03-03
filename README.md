@@ -57,6 +57,15 @@ El proyecto esta organizado en modulos:
 
 - Python 3.10 o superior.
 - Matplotlib instalado en el entorno.
+- PySide6 (usado por el backend `QtAgg` de Matplotlib).
+
+## Instalacion de dependencias
+
+Desde la carpeta raiz del proyecto:
+
+```bash
+pip install matplotlib PySide6
+```
 
 ---
 
